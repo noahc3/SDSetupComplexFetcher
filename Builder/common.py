@@ -1,5 +1,5 @@
 #
-# Kosmos Builder
+# SDSetup Complex Fetcher
 # Copyright (C) 2020 Nichole Mattera
 #
 # This program is free software; you can redistribute it and/or
@@ -18,60 +18,66 @@
 # 02110-1301, USA.
 #
 
-import enum
 import glob
-import os
-import re
+from pathlib import Path
 import shutil
 import uuid
 
-class Command(enum.Enum):
-    Kosmos = 0
-    SDSetup = 1
-    KosmosMinimal = 2
-
-class GitService(enum.Enum):
-    GitHub = 0
-    GitLab = 1
-    SourceForge = 2
-
 def generate_temp_path():
-    return os.path.join(os.getcwd(), 'tmp', str(uuid.uuid4()))
+    return Path.cwd().joinpath('tmp', str(uuid.uuid4()))
 
-def delete_path(path):
-    if os.path.exists(path):
-        if os.path.isfile(path):
-            os.remove(path)
-        else:
-            shutil.rmtree(path)
+def delete(source):
+    sourcePath = Path(source)
+
+    if not sourcePath.exists():
+        return
+
+    if sourcePath.is_file():
+        sourcePath.unlink()
+        return
+    
+    for fileSourcePath in sourcePath.iterdir():
+        delete(fileSourcePath)
+
+        if fileSourcePath.is_dir():
+            fileSourcePath.rmdir()
+
+    if sourcePath.is_dir():
+        sourcePath.rmdir()
+        return
 
 def copy_module_file(module_name, file_name, destination):
-    return shutil.copyfile(os.path.join(os.getcwd(), 'Modules', module_name, file_name), destination)
+    sourcePath = Path.cwd().joinpath('Modules', module_name, file_name)
+    return shutil.copyfile(sourcePath, destination)
 
 def copy_module_folder(module_name, folder_name, destination):
-    return shutil.copytree(os.path.join(os.getcwd(), 'Modules', module_name, folder_name), destination)
+    sourcePath = Path.cwd().joinpath('Modules', module_name, file_name)
+    return shutil.copytree(sourcePath, destination)
 
 def find_file(pattern):
-    return glob.glob(pattern, recursive=False)
+    return glob.glob(str(pattern), recursive=False)
 
-def sed(pattern, replace, file_path):
-    lines = []
-    with open(file_path, 'r') as text_file:
-        lines += text_file.readlines()
-    with open(file_path, 'w') as text_file:
-        for line in lines:
-            text_file.write(re.sub(pattern, replace, line))
+def mkdir(dest):
+    Path(dest).mkdir(parents=True, exist_ok=True)
 
-def mkdir(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
+def move(source, dest):
+    sourcePath = Path(source)
+    destPath = Path(dest)
 
-def move_contents_of_folder(source, dest):
-    files = os.listdir(source)
+    if not sourcePath.exists():
+        return
 
-    for f in files:
-        if os.path.isdir(os.path.join(source, f)):
-            mkdir(os.path.join(dest, f))
-            move_contents_of_folder(os.path.join(source, f), os.path.join(dest, f))
-        else:
-            shutil.move(os.path.join(source, f), dest)
+    if sourcePath.is_file():
+        sourcePath.rename(destPath)
+        return
+
+    if not destPath.exists():
+        destPath.mkdir(parents=True, exist_ok=True)
+    
+    for fileSourcePath in sourcePath.iterdir():
+        fileDestPath = destPath.joinpath(fileSourcePath.name)
+
+        if fileSourcePath.is_dir():
+            fileDestPath.mkdir(parents=True, exist_ok=True)
+        
+        move(fileSourcePath, fileDestPath)
