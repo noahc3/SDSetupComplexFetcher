@@ -22,6 +22,7 @@ import common
 import config
 from github import Github
 import json
+from pathlib import Path
 import re
 import shutil
 import urllib.request
@@ -91,14 +92,16 @@ def download_atmosphere(module, temp_directory):
     common.delete(bundle_path)
     common.delete(temp_directory.joinpath('switch/reboot_to_payload.nro'))
     common.delete(temp_directory.joinpath('switch'))
-    common.delete(temp_directory.joinpath('atmosphere/reboot_payload.bin'))
     
     payload_path = download_asset(module, release, 1)
     if payload_path is None:
         return None
 
-    common.mkdir(temp_directory.joinpath('bootloader/payloads'))
-    common.move(payload_path, temp_directory.joinpath('bootloader/payloads/fusee-primary.bin'))
+    common.mkdir(temp_directory.joinpath('../hekate_musthave/bootloader/payloads'))
+    shutil.copyfile(payload_path, temp_directory.joinpath('../hekate_musthave/bootloader/payloads/fusee-primary.bin'))
+
+    common.mkdir(temp_directory.joinpath('../atmosphere'))
+    common.move(payload_path, temp_directory.joinpath('../atmosphere/fusee-primary.bin'))
 
     common.copy_module_file('atmosphere', 'system_settings.ini', temp_directory.joinpath('atmosphere/config/system_settings.ini'))
 
@@ -125,13 +128,11 @@ def download_hekate(module, temp_directory):
         common.mkdir(temp_directory.joinpath('atmosphere'))
         shutil.copyfile(payload[0], temp_directory.joinpath('atmosphere/reboot_payload.bin'))
 
+        common.mkdir(temp_directory.joinpath('../hekate'))
+        common.move(payload[0], temp_directory.joinpath('../hekate/', Path(payload[0]).name))
+
     common.delete(temp_directory.joinpath('nyx_usb_max_rate (run once per windows pc).reg'))
     
-    common.mkdir(temp_directory.joinpath('../must_have'))
-    common.move(temp_directory.joinpath('bootloader'), temp_directory.joinpath('../must_have/bootloader'))
-    common.move(temp_directory.joinpath('atmosphere/reboot_payload.bin'), temp_directory.joinpath('../must_have/atmosphere/reboot_payload.bin'))
-    common.delete(temp_directory.joinpath('atmosphere'))
-
     return release.tag_name
 
 def download_hekate_icons(module, temp_directory):
@@ -144,10 +145,7 @@ def download_hekate_icons(module, temp_directory):
         zip_ref.extractall(temp_directory)
     
     common.delete(bundle_path)
-    common.move(temp_directory.joinpath('bootloader/res/icon_payload.bmp'), temp_directory.joinpath('bootloader/res/icon_payload_hue.bmp'))
-    common.move(temp_directory.joinpath('bootloader/res/icon_payload_custom.bmp'), temp_directory.joinpath('bootloader/res/icon_payload.bmp'))
-    common.move(temp_directory.joinpath('bootloader/res/icon_switch.bmp'), temp_directory.joinpath('bootloader/res/icon_switch_hue.bmp'))
-    common.move(temp_directory.joinpath('bootloader/res/icon_switch_custom.bmp'), temp_directory.joinpath('bootloader/res/icon_switch.bmp'))
+    common.copy_module_file('hekate_icons', 'hekate_ipl.ini', temp_directory.joinpath('bootloader/hekate_ipl.ini'))
 
     return release.tag_name
 
