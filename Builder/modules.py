@@ -307,6 +307,8 @@ def build(temp_directory, auto_build):
 
             # Auto builds have a different prompt at the end for parsing.
             if auto_build:
+                if module["sdsetup_module_name"] == "hekate_musthave":
+                    results.append(f'hekate:{version}')
                 results.append(f'{module["sdsetup_module_name"]}:{version}')
             else:
                 results.append(f'  {module["name"]} - {version}')
