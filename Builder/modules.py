@@ -100,8 +100,8 @@ def download_atmosphere(module, temp_directory):
     common.mkdir(temp_directory.joinpath('../hekate_musthave/bootloader/payloads'))
     shutil.copyfile(payload_path, temp_directory.joinpath('../hekate_musthave/bootloader/payloads/fusee-primary.bin'))
 
-    common.mkdir(temp_directory.joinpath('../atmosphere'))
-    common.move(payload_path, temp_directory.joinpath('../atmosphere/fusee-primary.bin'))
+    common.mkdir(temp_directory.joinpath('../fusee_primary'))
+    common.move(payload_path, temp_directory.joinpath('../fusee_primary/fusee-primary.bin'))
 
     common.copy_module_file('atmosphere', 'system_settings.ini', temp_directory.joinpath('atmosphere/config/system_settings.ini'))
 
@@ -309,6 +309,8 @@ def build(temp_directory, auto_build):
             if auto_build:
                 if module["sdsetup_module_name"] == "hekate_musthave":
                     results.append(f'hekate:{version}')
+                if module["sdsetup_module_name"] == "atmos_musthave":
+                    results.append(f'fusee_primary:{version}');
                 results.append(f'{module["sdsetup_module_name"]}:{version}')
             else:
                 results.append(f'  {module["name"]} - {version}')
