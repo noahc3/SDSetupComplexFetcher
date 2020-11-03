@@ -91,7 +91,6 @@ def download_atmosphere(module, temp_directory):
     
     common.delete(bundle_path)
     common.delete(temp_directory.joinpath('switch/reboot_to_payload.nro'))
-    common.delete(temp_directory.joinpath('switch'))
     
     payload_path = download_asset(module, release, 1)
     if payload_path is None:
