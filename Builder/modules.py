@@ -102,8 +102,6 @@ def download_atmosphere(module, temp_directory):
     common.mkdir(temp_directory.joinpath('../fusee_primary'))
     common.move(payload_path, temp_directory.joinpath('../fusee_primary/fusee-primary.bin'))
 
-    common.copy_module_file('atmosphere', 'system_settings.ini', temp_directory.joinpath('atmosphere/config/system_settings.ini'))
-
     common.delete(temp_directory.joinpath('hbmenu.nro'))
 
     return release.tag_name
