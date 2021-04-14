@@ -121,18 +121,6 @@
         "sdsetup_module_name": "sys_clk"
     },
     {
-        "name": "sys-con",
-        "download_function_name": "download_sys_con",
-        "git": {
-            "org_name": "cathery",
-            "repo_name": "sys-con",
-            "asset_patterns": [
-                ".*sys-con-.*\\.zip"
-            ]
-        },
-        "sdsetup_module_name": "sys_con"
-    },
-    {
         "name": "sys-ftpd-light",
         "download_function_name": "download_sys_ftpd_light",
         "git": {
