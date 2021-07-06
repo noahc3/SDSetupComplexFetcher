@@ -267,14 +267,12 @@ def download_sys_ftpd_light(module, temp_directory):
 
 def download_tesla_menu(module, temp_directory):
     release = get_latest_release(module)
-    bundle_path = download_asset(module, release, 0)
-    if bundle_path is None:
+    app_path = download_asset(module, release, 0)
+    if app_path is None:
         return None
     
-    with zipfile.ZipFile(bundle_path, 'r') as zip_ref:
-        zip_ref.extractall(temp_directory)
-    
-    common.delete(bundle_path)
+    common.mkdir(temp_directory.joinpath('switch/.overlays'))
+    common.move(app_path, temp_directory.joinpath('switch/.overlays/ovlmenu.ovl'))
 
     return release.tag_name
 
