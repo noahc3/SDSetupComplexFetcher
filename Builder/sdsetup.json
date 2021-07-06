@@ -139,7 +139,7 @@
             "org_name": "WerWolv",
             "repo_name": "Tesla-Menu",
             "asset_patterns": [
-                ".*\\.zip"
+                ".*\\.ovl"
             ]
         },
         "sdsetup_module_name": "tesla_menu"
