@@ -97,10 +97,10 @@ def download_atmosphere(module, temp_directory):
         return None
 
     common.mkdir(temp_directory.joinpath('../hekate_musthave/bootloader/payloads'))
-    shutil.copyfile(payload_path, temp_directory.joinpath('../hekate_musthave/bootloader/payloads/fusee-primary.bin'))
+    shutil.copyfile(payload_path, temp_directory.joinpath('../hekate_musthave/bootloader/payloads/fusee.bin'))
 
     common.mkdir(temp_directory.joinpath('../fusee_primary'))
-    common.move(payload_path, temp_directory.joinpath('../fusee_primary/fusee-primary.bin'))
+    common.move(payload_path, temp_directory.joinpath('../fusee_primary/fusee.bin'))
 
     common.delete(temp_directory.joinpath('hbmenu.nro'))
 
@@ -267,12 +267,14 @@ def download_sys_ftpd_light(module, temp_directory):
 
 def download_tesla_menu(module, temp_directory):
     release = get_latest_release(module)
-    app_path = download_asset(module, release, 0)
-    if app_path is None:
+    bundle_path = download_asset(module, release, 0)
+    if bundle_path is None:
         return None
-    
-    common.mkdir(temp_directory.joinpath('switch/.overlays'))
-    common.move(app_path, temp_directory.joinpath('switch/.overlays/ovlmenu.ovl'))
+
+    with zipfile.ZipFile(bundle_path, 'r') as zip_ref:
+        zip_ref.extractall(temp_directory)
+
+    common.delete(bundle_path)
 
     return release.tag_name
 
