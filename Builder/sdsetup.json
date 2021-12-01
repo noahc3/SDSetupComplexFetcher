@@ -25,18 +25,6 @@
         "sdsetup_module_name": "hekate_musthave"
     },
     {
-        "name": "Hekate Icons",
-        "download_function_name": "download_hekate_icons",
-        "git": {
-            "org_name": "NicholeMattera",
-            "repo_name": "Hekate-Icons",
-            "asset_patterns": [
-                ".*\\.zip"
-            ]
-        },
-        "sdsetup_module_name": "hekate_icons"
-    },
-    {
         "name": "Emuiibo",
         "download_function_name": "download_emuiibo",
         "git": {
